@@ -23,22 +23,33 @@
 
   <!-- Admin content -->
   <div id="adminContent" class="admin-box" style="display:none;">
-    <h2>Products</h2>
-    
-    <label>Title:</label>
-    <input type="text" id="productName" placeholder="Product Title">
-    
-    <label>Price:</label>
-    <input type="number" id="productPrice" placeholder="Price">
-    
-    <label>Upload Product Image:</label>
-    <input type="file" id="productImage" accept="image/*">
-    
-    <label>Upload Product File:</label>
-    <input type="file" id="productFile">
-    
-    <button id="addProductBtn">Add Product</button>
-    
+    <h2>Manage Products</h2>
+
+    <form id="productForm">
+      <div class="form-group">
+        <label for="productName">Product Title:</label>
+        <input type="text" id="productName" placeholder="Enter product title">
+      </div>
+
+      <div class="form-group">
+        <label for="productPrice">Price:</label>
+        <input type="number" id="productPrice" placeholder="Enter product price">
+      </div>
+
+      <div class="form-group">
+        <label for="productImage">Upload Product Image:</label>
+        <input type="file" id="productImage" accept="image/*">
+      </div>
+
+      <div class="form-group">
+        <label for="productFile">Upload Product File:</label>
+        <input type="file" id="productFile">
+      </div>
+
+      <button type="button" id="addProductBtn">Add Product</button>
+    </form>
+
+    <h3>Existing Products</h3>
     <div id="productListAdmin"></div>
   </div>
 
