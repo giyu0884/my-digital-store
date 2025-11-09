@@ -5,26 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Digital Store</title>
 <style>
+/* Body & Background */
 body {
   font-family: Arial, sans-serif;
-  background: #fff5f0;
   margin: 0;
   padding: 20px;
+  background: linear-gradient(135deg, #fff0e6, #ffd6b3); /* light red-orange gradient */
 }
+
+/* Title */
 h1 {
   text-align: center;
   color: #e74c3c; /* red-orange */
   margin-bottom: 20px;
 }
+
+/* Product Grid */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 15px;
   justify-items: center;
 }
+
+/* Product Card */
 .product-card {
   width: 160px;
-  background: #fff;
+  background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -36,6 +43,8 @@ h1 {
 .product-card:hover {
   transform: translateY(-3px);
 }
+
+/* Product Image */
 .product-card img {
   width: 100%;
   height: 120px;
@@ -43,6 +52,8 @@ h1 {
   pointer-events: none;
   user-select: none;
 }
+
+/* Product Info */
 .product-card h3 {
   font-size: 14px;
   margin: 8px 0 4px 0;
@@ -60,11 +71,13 @@ h1 {
   margin: 0;
   text-align: center;
 }
+
+/* Buy Button */
 .buy-btn {
   width: 90%;
   margin: 8px 0 10px 0;
   padding: 6px;
-  background: linear-gradient(90deg, #ff6a00, #ff3d00); /* red-orange gradient */
+  background: linear-gradient(90deg, #ff6a00, #ff3d00);
   border: none;
   color: white;
   border-radius: 6px;
@@ -76,6 +89,8 @@ h1 {
 .buy-btn:hover {
   background: linear-gradient(90deg, #ff3d00, #ff6a00);
 }
+
+/* Responsive */
 @media(max-width:600px){
   .product-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
   .product-card { width: 140px; }
@@ -101,7 +116,7 @@ function renderProducts() {
     return;
   }
 
-  products.forEach(product => {
+  products.forEach((product, index) => {
     const card = document.createElement('div');
     card.className = 'product-card';
 
@@ -120,8 +135,26 @@ function renderProducts() {
     const btn = document.createElement('button');
     btn.className = 'buy-btn';
     btn.textContent = 'Buy Now';
-    card.appendChild(btn);
+    
+    // Buy button click
+    btn.addEventListener('click', () => {
+      const confirmPayment = confirm(`Pay ₱${product.price} to get this product?`);
+      if(confirmPayment) {
+        // Trigger download of the actual product
+        if(product.productBase64) {
+          const link = document.createElement('a');
+          link.href = product.productBase64;
+          link.download = product.name || `product${index+1}.zip`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          alert("Product file is missing!");
+        }
+      }
+    });
 
+    card.appendChild(btn);
     productGrid.appendChild(card);
   });
 }
@@ -129,5 +162,6 @@ function renderProducts() {
 // Call render on page load
 renderProducts();
 </script>
+
 </body>
 </html>
