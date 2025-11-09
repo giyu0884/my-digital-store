@@ -35,15 +35,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    document.getElementById("addProductBtn").onclick = () => {
+    function readFileAsBase64(file){
+        return new Promise((resolve,reject)=>{
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = e => reject(e);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    document.getElementById("addProductBtn").onclick = async () => {
         const name = document.getElementById("productName").value.trim();
         const price = parseFloat(document.getElementById("productPrice").value);
-        const image = document.getElementById("productImage").value.trim();
-        const file = document.getElementById("productFile").value.trim();
+        const imageFile = document.getElementById("productImage").files[0];
+        const productFile = document.getElementById("productFile").files[0];
 
-        if(!name||!price||!image||!file){ alert("Fill all fields"); return; }
+        if(!name || !price || !imageFile || !productFile){ alert("Fill all fields"); return; }
 
-        products.push({name, price, image, file});
+        const imageBase64 = await readFileAsBase64(imageFile);
+        const productBase64 = await readFileAsBase64(productFile);
+
+        products.push({name, price, image: imageBase64, file: productBase64});
         localStorage.setItem("products", JSON.stringify(products));
         renderAdminProducts();
 
@@ -53,16 +65,32 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("productFile").value = "";
     };
 
-    window.editProduct = (i)=>{
+    window.editProduct = async (i)=>{
         const newName = prompt("Product title:", products[i].name);
         const newPrice = prompt("Price:", products[i].price);
-        const newImage = prompt("Image URL:", products[i].image);
-        const newFile = prompt("Product File URL:", products[i].file);
+        
+        let newImage = products[i].image;
+        let newFile = products[i].file;
+
+        const imageInput = document.createElement("input");
+        imageInput.type = "file";
+        imageInput.accept = "image/*";
+        imageInput.onchange = async e => {
+            if(e.target.files[0]) newImage = await readFileAsBase64(e.target.files[0]);
+        };
+        imageInput.click();
+
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.onchange = async e => {
+            if(e.target.files[0]) newFile = await readFileAsBase64(e.target.files[0]);
+        };
+        fileInput.click();
 
         if(newName) products[i].name = newName;
         if(newPrice) products[i].price = parseFloat(newPrice);
-        if(newImage) products[i].image = newImage;
-        if(newFile) products[i].file = newFile;
+        products[i].image = newImage;
+        products[i].file = newFile;
 
         localStorage.setItem("products", JSON.stringify(products));
         renderAdminProducts();
