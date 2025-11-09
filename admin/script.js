@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 products.push({
                     name,
                     price,
-                    imageData,      // first file: image
-                    fileData,       // second file: digital product
+                    imageData,
+                    fileData,
                     fileName: productFile.name
                 });
                 localStorage.setItem("products", JSON.stringify(products));
@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Edit & Delete
     window.editProduct = function(index) {
         let products = JSON.parse(localStorage.getItem("products") || "[]");
         const p = products[index];
@@ -104,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const newPrice = prompt("Price:", p.price);
         if (!newName || !newPrice) return;
 
-        // Keep old image and file
         products[index] = { ...p, name: newName, price: newPrice };
         localStorage.setItem("products", JSON.stringify(products));
         displayProducts();
