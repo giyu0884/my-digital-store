@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h2>Add Product</h2>
                 <input type="text" id="productName" placeholder="Product Name">
                 <input type="text" id="productPrice" placeholder="Price">
-                <input type="text" id="productLink" placeholder="File / Link URL">
+                <input type="file" id="productFile" accept=".zip,.pdf,.jpg,.png,.mp4">
                 <button id="addProductBtn">Add Product</button>
                 
                 <h2>Product List</h2>
@@ -41,19 +41,26 @@ document.addEventListener("DOMContentLoaded", () => {
     function addProduct() {
         const name = document.getElementById("productName").value;
         const price = document.getElementById("productPrice").value;
-        const link = document.getElementById("productLink").value;
+        const fileInput = document.getElementById("productFile");
+        const file = fileInput.files[0];
 
-        if(!name || !price || !link) return alert("Fill all fields!");
+        if (!name || !price || !file) return alert("Fill all fields and select a file!");
 
-        let products = JSON.parse(localStorage.getItem("products") || "[]");
-        products.push({ name, price, link });
-        localStorage.setItem("products", JSON.stringify(products));
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileData = e.target.result; // Base64 string
 
-        document.getElementById("productName").value = "";
-        document.getElementById("productPrice").value = "";
-        document.getElementById("productLink").value = "";
+            let products = JSON.parse(localStorage.getItem("products") || "[]");
+            products.push({ name, price, fileData, fileName: file.name });
+            localStorage.setItem("products", JSON.stringify(products));
 
-        displayProducts();
+            document.getElementById("productName").value = "";
+            document.getElementById("productPrice").value = "";
+            fileInput.value = "";
+
+            displayProducts();
+        };
+        reader.readAsDataURL(file);
     }
 
     function displayProducts() {
@@ -65,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             li.innerHTML = `
                 ${p.name} - $${p.price} 
-                <a href="${p.link}" target="_blank">View</a>
+                <a href="${p.fileData}" download="${p.fileName}">Download</a>
                 <button onclick="editProduct(${index})">Edit</button>
                 <button onclick="deleteProduct(${index})">Delete</button>
             `;
@@ -73,20 +80,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Edit & Delete functions
+    // Edit & Delete
     window.editProduct = function(index) {
         let products = JSON.parse(localStorage.getItem("products") || "[]");
         const p = products[index];
 
         const newName = prompt("Product Name:", p.name);
         const newPrice = prompt("Price:", p.price);
-        const newLink = prompt("File / Link URL:", p.link);
+        if (!newName || !newPrice) return;
 
-        if(newName && newPrice && newLink){
-            products[index] = { name: newName, price: newPrice, link: newLink };
-            localStorage.setItem("products", JSON.stringify(products));
-            displayProducts();
-        }
+        // Optional: change file? (simpler: keep old file)
+        products[index] = { ...p, name: newName, price: newPrice };
+        localStorage.setItem("products", JSON.stringify(products));
+        displayProducts();
     }
 
     window.deleteProduct = function(index) {
