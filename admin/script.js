@@ -1,30 +1,28 @@
-// Dummy admin credentials
-const adminUser = "admin";
-const adminPass = "1234";
+document.addEventListener("DOMContentLoaded", () => {
+    // Dummy admin credentials
+    const adminUser = "admin";
+    const adminPass = "1234";
 
-// Get the login button
-const loginBtn = document.getElementById("loginBtn");
+    const loginBtn = document.getElementById("loginBtn");
 
-loginBtn.addEventListener("click", () => {
-    // Get input values
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    loginBtn.addEventListener("click", () => {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
 
-    // Check credentials
-    if(username === adminUser && password === adminPass) {
-        // Login successful → show dashboard
-        document.body.innerHTML = `
-            <h1>Welcome, Admin!</h1>
-            <p>Here you can manage your products.</p>
-            <button id="logoutBtn">Logout</button>
-        `;
+        if(username === adminUser && password === adminPass) {
+            // Replace login form with simple dashboard
+            document.body.innerHTML = `
+                <h1>Welcome, Admin!</h1>
+                <p>Here you can manage your products.</p>
+                <button id="logoutBtn">Logout</button>
+            `;
 
-        // Logout functionality
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            location.reload(); // reload login page
-        });
-    } else {
-        alert("Incorrect username or password!");
-    }
+            // Logout button reloads the page
+            document.getElementById("logoutBtn").addEventListener("click", () => {
+                location.reload();
+            });
+        } else {
+            alert("Incorrect username or password!");
+        }
+    });
 });
-
