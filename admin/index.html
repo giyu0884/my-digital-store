@@ -4,156 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel</title>
-<style>
-body { font-family: Arial, sans-serif; background:#f5f6fa; margin:0; padding:40px;}
-.container { max-width:700px; margin:auto; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:30px;}
-h2 { text-align:center; color:#333;}
-.form-group { margin-bottom:20px;}
-label { display:block; font-weight:600; margin-bottom:8px; color:#333;}
-input[type="text"], input[type="number"], input[type="file"] { width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;}
-button { padding:8px 12px; border:none; border-radius:6px; cursor:pointer; margin-right:5px;}
-.add-btn { width:100%; background:#007bff; color:white; margin-top:10px;}
-.add-btn:hover { background:#0056b3;}
-.logout-btn { width:100%; background:#dc3545; color:white; margin-top:10px;}
-.logout-btn:hover { background:#a71d2a;}
-.product-list { margin-top:30px;}
-.product-card { background:#fafafa; border-radius:10px; padding:15px; margin-bottom:15px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-.product-card img { width:100%; max-height:200px; object-fit:cover; border-radius:8px;}
-.edit-btn { background:#ffc107; color:#333;}
-.delete-btn { background:#dc3545; color:white;}
-.login-screen { max-width:400px; margin:80px auto; padding:30px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center;}
-.login-screen input { width:100%; margin-bottom:15px; padding:10px; border-radius:8px; border:1px solid #ccc;}
-</style>
+<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
-<div id="app"></div>
+<h1>Admin Panel</h1>
 
-<script>
-// Admin credentials
-const adminUser = "admin";
-const adminPass = "1234";
-const app = document.getElementById("app");
+<label>Username:</label>
+<input type="text" id="username" placeholder="admin">
+<label>Password:</label>
+<input type="password" id="password" placeholder="1234">
+<button id="loginBtn">Login</button>
 
-// Clear all existing products
-localStorage.setItem("products", JSON.stringify([]));
-
-// Show login
-app.innerHTML = `
-<div class="login-screen">
-  <h2>Admin Login</h2>
-  <input type="text" id="username" placeholder="Username" />
-  <input type="password" id="password" placeholder="Password" />
-  <button id="loginBtn">Login</button>
+<div id="adminContent" style="display:none;">
+    <h2>Products</h2>
+    <input type="text" id="productName" placeholder="Product Name">
+    <input type="number" id="productPrice" placeholder="Price">
+    <input type="text" id="productImage" placeholder="Image URL">
+    <button id="addProductBtn">Add Product</button>
+    <div id="productListAdmin"></div>
 </div>
-`;
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  if(username === adminUser && password === adminPass) loadAdminPanel();
-  else alert("Incorrect username or password!");
-});
-
-function loadAdminPanel(editIndex = null){
-  let products = JSON.parse(localStorage.getItem("products") || "[]");
-  let editingProduct = editIndex !== null ? products[editIndex] : null;
-
-  app.innerHTML = `
-    <div class="container">
-      <h2>Admin Panel</h2>
-      <div class="form-group">
-        <label>Product Name</label>
-        <input type="text" id="productName" placeholder="Enter product name" value="${editingProduct ? editingProduct.name : ''}">
-      </div>
-      <div class="form-group">
-        <label>Price (₱)</label>
-        <input type="number" id="productPrice" placeholder="Enter price" value="${editingProduct ? editingProduct.price : ''}">
-      </div>
-      <div class="form-group">
-        <label>Product Image</label>
-        <input type="file" id="productImage" accept="image/*">
-      </div>
-      <div class="form-group">
-        <label>Digital Product File</label>
-        <input type="file" id="productFile">
-      </div>
-      <button id="addProductBtn" class="add-btn">${editingProduct ? 'Save Changes' : 'Add Product'}</button>
-      <button id="logoutBtn" class="logout-btn">Logout</button>
-      <div class="product-list" id="productList"></div>
-    </div>
-  `;
-
-  document.getElementById("logoutBtn").addEventListener("click", () => location.reload());
-
-  displayProducts();
-
-  document.getElementById("addProductBtn").addEventListener("click", async ()=>{
-    const name = document.getElementById("productName").value.trim();
-    const price = document.getElementById("productPrice").value.trim();
-    const imageInput = document.getElementById("productImage");
-    const fileInput = document.getElementById("productFile");
-
-    if(!name || !price) { alert("Name and price are required!"); return; }
-
-    let imageBase64 = editingProduct ? editingProduct.imageBase64 : null;
-    let fileName = editingProduct ? editingProduct.fileName : null;
-
-    if(imageInput.files[0]) imageBase64 = await toBase64(imageInput.files[0]);
-    if(fileInput.files[0]) fileName = fileInput.files[0].name;
-
-    const newProduct = { name, price, imageBase64, fileName };
-
-    if(editIndex !== null){
-      products[editIndex] = newProduct;
-    } else {
-      products.push(newProduct);
-    }
-
-    localStorage.setItem("products", JSON.stringify(products));
-    loadAdminPanel(); // reload panel
-  });
-
-  function displayProducts(){
-    const productList = document.getElementById("productList");
-    if(products.length === 0){ productList.innerHTML="<p>No products yet.</p>"; return; }
-
-    productList.innerHTML = products.map((p,index)=>`
-      <div class="product-card">
-        <img src="${p.imageBase64}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>₱${p.price}</p>
-        <small>${p.fileName}</small><br>
-        <button class="edit-btn" data-index="${index}">Edit</button>
-        <button class="delete-btn" data-index="${index}">Delete</button>
-      </div>
-    `).join("");
-
-    // Add edit/delete events
-    document.querySelectorAll(".edit-btn").forEach(btn=>{
-      btn.addEventListener("click", ()=> loadAdminPanel(parseInt(btn.dataset.index)) );
-    });
-    document.querySelectorAll(".delete-btn").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        if(confirm("Delete this product?")){
-          products.splice(btn.dataset.index,1);
-          localStorage.setItem("products", JSON.stringify(products));
-          displayProducts();
-        }
-      });
-    });
-  }
-}
-
-function toBase64(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = err => reject(err);
-  });
-}
-</script>
-
+<script src="admin.js"></script>
 </body>
 </html>
