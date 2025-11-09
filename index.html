@@ -9,43 +9,62 @@ body { font-family: Arial, sans-serif; background:#f5f6fa; margin:0; padding:20p
 h1 { text-align:center; color:#333;}
 .product-grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); /* Medium size */
-  gap:25px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); /* Compact cards */
+  gap:15px;
   margin-top:30px;
 }
 .product-card {
   background:#fff;
-  border-radius:12px;
-  padding:20px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  border-radius:10px;
+  padding:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
   display:flex;
   flex-direction:column;
   align-items:center;
 }
 .product-card img {
   width:100%;
-  max-height:250px; /* Medium height */
+  max-height:150px; /* Compact image */
   object-fit:cover;
-  border-radius:8px;
+  border-radius:6px;
   pointer-events:none;
   user-select:none;
 }
-.product-card h3 { margin:12px 0 6px 0; color:#333; text-align:center; }
-.product-card p { margin:5px 0; color:#555; text-align:center; }
+.product-card h3 {
+  margin:8px 0 4px 0;
+  font-size:14px;
+  color:#333;
+  text-align:center;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  width:100%;
+}
+.product-card p {
+  margin:2px 0;
+  font-size:13px;
+  color:#555;
+  text-align:center;
+}
 .buy-btn {
   display:block;
-  width:100%;
+  width:90%;
   text-align:center;
-  padding:12px;
-  margin-top:15px;
+  padding:8px;
+  margin-top:8px;
   background:#007bff;
   color:white;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
   cursor:pointer;
-  font-weight:600;
+  font-size:13px;
 }
 .buy-btn:hover { background:#0056b3; }
+@media(max-width:600px){
+  .product-grid { grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); }
+  .product-card img { max-height:120px; }
+  .buy-btn { font-size:12px; padding:6px; }
+}
 </style>
 </head>
 <body>
@@ -66,7 +85,7 @@ function loadProducts() {
   productGrid.innerHTML = products.map((p, index) => `
     <div class="product-card">
       <img src="${p.imageBase64}" alt="${p.name}">
-      <h3>${p.name}</h3>
+      <h3 title="${p.name}">${p.name}</h3>
       <p>₱${p.price}</p>
       <button class="buy-btn" data-index="${index}">Buy</button>
     </div>
@@ -75,7 +94,7 @@ function loadProducts() {
   document.querySelectorAll(".buy-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const product = products[btn.dataset.index];
-      alert("You clicked Buy for: " + product.name + "\n\nLater you can integrate payment gateway here.");
+      alert("You clicked Buy for: " + product.name + "\n\nPayment integration can go here.");
     });
   });
 }
