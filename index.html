@@ -9,11 +9,11 @@
 <body>
   <div class="container">
     <h1>Welcome to My Digital Store</h1>
-    
+
     <section>
       <h2>Our Products</h2>
       <div id="productContainer">
-        <!-- Products will appear here -->
+        <!-- Products will be generated here -->
       </div>
     </section>
   </div>
@@ -23,22 +23,39 @@
       const container = document.getElementById("productContainer");
       const products = JSON.parse(localStorage.getItem("products") || "[]");
 
-      if(products.length === 0) {
+      if (products.length === 0) {
         container.innerHTML = "<p>No products available yet.</p>";
         return;
       }
 
-      products.forEach(p => {
+      products.forEach((p, index) => {
         const div = document.createElement("div");
         div.className = "product-card";
         div.innerHTML = `
+          <img src="${p.imageData || ''}" alt="${p.name}" class="product-image">
           <h3>${p.name}</h3>
           <p>Price: $${p.price}</p>
-          <a href="${p.fileData}" download="${p.fileName}" class="download-btn">Download</a>
+          <button onclick="buyProduct(${index})" class="buy-btn">Buy</button>
         `;
         container.appendChild(div);
       });
     });
+
+    // Buy button logic (simple placeholder)
+    function buyProduct(index) {
+      const products = JSON.parse(localStorage.getItem("products") || "[]");
+      const product = products[index];
+
+      // Simulate purchase process
+      alert(`Thank you for buying "${product.name}"!\nAfter payment, you will receive the product file.`);
+
+      // Example: trigger download of product after "payment"
+      // In real-world, replace this with real payment API
+      const fileLink = document.createElement("a");
+      fileLink.href = product.fileData;
+      fileLink.download = product.fileName;
+      fileLink.click();
+    }
   </script>
 </body>
 </html>
