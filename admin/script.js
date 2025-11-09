@@ -54,10 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     window.editProduct = (i)=>{
-        const newName = prompt("Product name:", products[i].name);
+        const newName = prompt("Product title:", products[i].name);
         const newPrice = prompt("Price:", products[i].price);
         const newImage = prompt("Image URL:", products[i].image);
         const newFile = prompt("Product File URL:", products[i].file);
+
         if(newName) products[i].name = newName;
         if(newPrice) products[i].price = parseFloat(newPrice);
         if(newImage) products[i].image = newImage;
