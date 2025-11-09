@@ -1,74 +1,70 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFD6A5; /* Warm background */
+    color: #D35400; /* Red-orange text */
+    margin: 0;
+    padding: 0;
 }
 
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+header { text-align: center; padding: 20px; }
+h1 { font-size: 2em; }
 
-h1, h2 {
-  text-align: center;
-  color: #B87C4C;
-}
-
-#productContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
 }
 
 .product-card {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 15px;
-  width: 220px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: #fff;
+    width: 200px; /* Medium size */
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.product-card h3 {
-  margin: 10px 0;
-  font-size: 18px;
+.product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    pointer-events: none; /* not downloadable */
 }
 
-.product-card p {
-  margin: 5px 0 15px;
-  font-size: 16px;
-  color: #333;
+button {
+    background-color: #FF6B6B;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-/* Image displayed but not downloadable */
-.product-image {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  pointer-events: none; /* prevents right-click */
-  user-select: none;
-  border-radius: 6px;
+button:hover { background-color: #FF3B3B; }
+
+/* Modal */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 10; 
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
 }
 
-.buy-btn {
-  display: inline-block;
-  padding: 8px 12px;
-  background-color: #B87C4C;
-  color: white;
-  text-decoration: none;
-  border: none;
-  border-radius: 6px;
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  width: 300px;
+  border-radius: 8px;
+}
+
+.close {
+  float: right;
+  font-size: 24px;
   cursor: pointer;
-}
-
-.buy-btn:hover {
-  background-color: #8E5F37;
 }
