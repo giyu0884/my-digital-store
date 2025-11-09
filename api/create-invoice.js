@@ -1,19 +1,16 @@
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { name, price } = req.body;
 
-  // Validate input
   if (!name || !price || isNaN(price)) {
     return res.status(400).json({ error: "Missing or invalid product name/price" });
   }
 
-  // Get secret key from environment variable
   const XENDIT_SECRET_KEY = process.env.XENDIT_SECRET_KEY;
 
   if (!XENDIT_SECRET_KEY) {
@@ -21,7 +18,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Create invoice via Xendit API
     const response = await fetch("https://api.xendit.co/v2/invoices", {
       method: "POST",
       headers: {
@@ -29,20 +25,18 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        external_id: `product-${Date.now()}`,  // Unique ID
-        amount: Number(price),                 // Must be a number
+        external_id: `product-${Date.now()}`,
+        amount: Number(price),
         description: name,
-        success_redirect_url: "https://my-digital-store.vercel.app/success.html" // Redirect after payment
+        success_redirect_url: "https://my-digital-store.vercel.app/success.html"
       }),
     });
 
     const data = await response.json();
 
     if (data.invoice_url) {
-      // Send invoice URL to frontend
-      res.status(200).json(data);
+      res.status(200).json({ invoice_url: data.invoice_url });
     } else {
-      // Return Xendit error response
       res.status(500).json({ error: "Invoice creation failed", details: data });
     }
   } catch (err) {
