@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h2>Add Product</h2>
                 <input type="text" id="productName" placeholder="Product Name">
                 <input type="text" id="productPrice" placeholder="Price">
-                <input type="file" id="productImage" accept="image/*" title="Upload Image">
-                <input type="file" id="productFile" accept=".zip,.pdf,.mp4" title="Upload Product File">
+                <input type="file" id="image" accept="image/*" title="Upload Image">
+                <input type="file" id="product" accept=".zip,.pdf,.mp4" title="Upload Product">
                 <button id="addProductBtn">Add Product</button>
 
                 <h2>Product List</h2>
@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function addProduct() {
         const name = document.getElementById("productName").value;
         const price = document.getElementById("productPrice").value;
-        const imageFile = document.getElementById("productImage").files[0];
-        const productFile = document.getElementById("productFile").files[0];
+        const imageFile = document.getElementById("image").files[0];
+        const productFile = document.getElementById("product").files[0];
 
         if (!name || !price || !imageFile || !productFile) return alert("Fill all fields and select files!");
 
@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 products.push({
                     name,
                     price,
-                    imageData,
-                    fileData,
+                    imageData,      // first file: image
+                    fileData,       // second file: digital product
                     fileName: productFile.name
                 });
                 localStorage.setItem("products", JSON.stringify(products));
@@ -68,8 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Clear inputs
                 document.getElementById("productName").value = "";
                 document.getElementById("productPrice").value = "";
-                document.getElementById("productImage").value = "";
-                document.getElementById("productFile").value = "";
+                document.getElementById("image").value = "";
+                document.getElementById("product").value = "";
 
                 displayProducts();
             };
