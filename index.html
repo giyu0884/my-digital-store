@@ -9,54 +9,79 @@ body { font-family: Arial, sans-serif; background:#f5f6fa; margin:0; padding:20p
 h1 { text-align:center; color:#333;}
 .product-grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); /* Smaller cards */
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); /* Medium size */
+  gap:20px;
   margin-top:30px;
 }
 .product-card {
   background:#fff;
-  border-radius:10px;
-  padding:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  border-radius:12px;
+  padding:15px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.1);
   display:flex;
   flex-direction:column;
   align-items:center;
 }
 .product-card img {
   width:100%;
-  max-height:140px; /* smaller image */
+  max-height:160px; /* Adjusted image size */
   object-fit:cover;
-  border-radius:6px;
+  border-radius:8px;
   pointer-events:none;
   user-select:none;
 }
-.product-card h3 {
-  margin:8px 0 4px 0;
-  font-size:14px;
-  color:#333;
-  text-align:center;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  width:100%;
-}
-.product-card p {
-  margin:2px 0;
-  font-size:13px;
-  color:#555;
-  text-align:center;
-}
+.product-card h3 { margin:10px 0 5px 0; color:#333; text-align:center; }
+.product-card p { margin:5px 0; color:#555; text-align:center; }
 .buy-btn {
   display:block;
   width:90%;
   text-align:center;
-  padding:8px;
-  margin-top:6px;
+  padding:10px;
+  margin-top:10px;
   background:#007bff;
   color:white;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   cursor:pointer;
-  font-size:13px;
+  font-weight:600;
 }
-.buy-btn:hover { background:
+.buy-btn:hover { background:#0056b3; }
+</style>
+</head>
+<body>
+
+<h1>My Digital Store</h1>
+<div class="product-grid" id="productGrid"></div>
+
+<script>
+function loadProducts() {
+  const productGrid = document.getElementById("productGrid");
+  const products = JSON.parse(localStorage.getItem("products") || "[]");
+
+  if(products.length === 0) {
+    productGrid.innerHTML = "<p style='text-align:center;'>No products available.</p>";
+    return;
+  }
+
+  productGrid.innerHTML = products.map((p, index) => `
+    <div class="product-card">
+      <img src="${p.imageBase64}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>₱${p.price}</p>
+      <button class="buy-btn" data-index="${index}">Buy</button>
+    </div>
+  `).join("");
+
+  document.querySelectorAll(".buy-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const product = products[btn.dataset.index];
+      alert("You clicked Buy for: " + product.name + "\n\nPayment integration can go here.");
+    });
+  });
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>
