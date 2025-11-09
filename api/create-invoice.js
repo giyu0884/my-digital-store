@@ -1,5 +1,7 @@
 import fetch from "node-fetch";
 
+const XENDIT_SECRET_KEY = process.env.XENDIT_SECRET_KEY;
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -7,13 +9,12 @@ export default async function handler(req, res) {
 
   const { name, price } = req.body;
 
-  if (!name || !price || isNaN(price)) {
-    return res.status(400).json({ error: "Missing or invalid product name/price" });
+  if (!name || !price) {
+    return res.status(400).json({ error: "Missing product name or price" });
   }
 
-  const XENDIT_SECRET_KEY = process.env.XENDIT_SECRET_KEY;
-
   if (!XENDIT_SECRET_KEY) {
+    console.error("XENDIT_SECRET_KEY is missing!");
     return res.status(500).json({ error: "Xendit secret key not set" });
   }
 
@@ -33,6 +34,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log("Xendit response:", data);
 
     if (data.invoice_url) {
       res.status(200).json({ invoice_url: data.invoice_url });
