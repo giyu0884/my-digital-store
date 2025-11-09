@@ -1,36 +1,62 @@
-body { 
-  font-family: Arial, sans-serif; 
-  background-color: #f4f4f4; 
-  color: #333; 
-  text-align: center; 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
   margin: 0;
+  padding: 0;
 }
 
-header { 
-  background-color: #715A5A; 
-  color: white; 
-  padding: 20px 0; 
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.product { 
-  background: white; 
-  padding: 20px; 
-  margin: 40px auto; 
-  max-width: 400px; 
-  border-radius: 10px; 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+h1, h2 {
+  text-align: center;
+  color: #B87C4C;
 }
 
-button {
+#productContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.product-card {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.product-card h3 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.product-card p {
+  margin: 5px 0 15px;
+  font-size: 16px;
+  color: #333;
+}
+
+.download-btn {
+  display: inline-block;
+  padding: 8px 12px;
   background-color: #B87C4C;
   color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
+  text-decoration: none;
   border-radius: 6px;
-  cursor: pointer;
 }
 
-button:hover { 
-  background-color: #8E5F37; 
+.download-btn:hover {
+  background-color: #8E5F37;
 }
