@@ -4,27 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Admin Panel</h1>
+<div class="container">
 
-<label>Username:</label>
-<input type="text" id="username" placeholder="admin">
-<label>Password:</label>
-<input type="password" id="password" placeholder="1234">
-<button id="loginBtn">Login</button>
+  <h1>Admin Panel</h1>
 
-<div id="adminContent" style="display:none;">
+  <!-- Login -->
+  <div id="loginArea" class="login-box">
+    <label>Username:</label>
+    <input type="text" id="username" placeholder="admin">
+    <label>Password:</label>
+    <input type="password" id="password" placeholder="1234">
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <!-- Admin content -->
+  <div id="adminContent" class="admin-box" style="display:none;">
     <h2>Products</h2>
+    
     <input type="text" id="productName" placeholder="Product Name">
     <input type="number" id="productPrice" placeholder="Price">
-    <input type="text" id="productImage" placeholder="Image URL">
+    <input type="text" id="productImage" placeholder="Product Image URL">
+    <input type="text" id="productFile" placeholder="Product File URL">
     <button id="addProductBtn">Add Product</button>
+    
     <div id="productListAdmin"></div>
+  </div>
+
 </div>
 
-<script src="admin.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
