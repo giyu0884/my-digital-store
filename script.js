@@ -1,3 +1,31 @@
+function createBuyButton(product) {
+  const btn = document.createElement("button");
+  btn.innerText = "Buy Now";
+  btn.classList.add("buy-btn");
+  btn.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/api/create-invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: product.name, price: product.price })
+      });
+
+      const data = await res.json();
+
+      if (data.invoice_url) {
+        window.location.href = data.invoice_url;
+      } else {
+        alert("Invoice creation failed. Check console.");
+        console.error(data);
+      }
+    } catch (err) {
+      console.error("Error calling API:", err);
+      alert("Error connecting to payment server");
+    }
+  });
+
+  return btn;
+}
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let selectedProduct = null;
 
@@ -59,3 +87,4 @@ confirmPaymentBtn.onclick = async () => {
 };
 
 renderProducts();
+
