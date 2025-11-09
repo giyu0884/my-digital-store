@@ -4,126 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Digital Store</title>
-<style>
-body { font-family: Arial, sans-serif; margin:0; padding:20px; background-color:#ffe6dc; }
-h1 { text-align:center; color:#e74c3c; margin-bottom:20px; }
-.product-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; justify-items:center; }
-.product-card { width:160px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; flex-direction:column; align-items:center; transition: transform 0.2s; }
-.product-card:hover { transform:translateY(-3px); }
-.product-card img { width:100%; height:120px; object-fit:cover; pointer-events:none; user-select:none; }
-.product-card h3 { font-size:14px; margin:8px 0 4px 0; color:#333; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%; }
-.product-card p { font-size:13px; color:#e74c3c; font-weight:bold; margin:0; text-align:center; }
-.buy-btn { width:90%; margin:8px 0 10px 0; padding:6px; background:linear-gradient(90deg,#ff6a00,#ff3d00); border:none; color:white; border-radius:6px; cursor:pointer; font-size:13px; text-align:center; transition:background 0.3s; }
-.buy-btn:hover { background:linear-gradient(90deg,#ff3d00,#ff6a00); }
-@media(max-width:600px){ .product-grid { grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); } .product-card { width:140px; } .product-card img { height:100px; } .buy-btn { font-size:12px; padding:5px; } }
-
-/* Modal */
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
-.modal-content { background:#fff; padding:20px; border-radius:10px; width:90%; max-width:400px; text-align:center; }
-.modal-content h2 { margin-top:0; color:#e74c3c; }
-.modal-content input { width:80%; padding:8px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
-.modal-content button { padding:8px 15px; margin-top:10px; background:linear-gradient(90deg,#ff6a00,#ff3d00); border:none; color:white; border-radius:5px; cursor:pointer; }
-.modal-content button:hover { background:linear-gradient(90deg,#ff3d00,#ff6a00); }
-.close-btn { position:absolute; top:10px; right:15px; font-size:18px; cursor:pointer; color:#e74c3c; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>My Digital Store</h1>
-<div class="product-grid" id="productGrid"></div>
+<header>
+    <h1>My Digital Store</h1>
+</header>
+
+<main>
+    <div id="productList" class="product-grid"></div>
+</main>
 
 <!-- Checkout Modal -->
-<div class="modal" id="checkoutModal">
+<div id="checkoutModal" class="modal">
   <div class="modal-content">
-    <span class="close-btn" id="closeModal">&times;</span>
+    <span class="close">&times;</span>
     <h2>Checkout</h2>
     <p id="checkoutProductName"></p>
     <p id="checkoutProductPrice"></p>
-    <input type="text" id="customerName" placeholder="Enter your name">
-    <button id="confirmPaymentBtn">Confirm Payment</button>
+    <label>Name:</label>
+    <input type="text" id="customerName" placeholder="Your name">
+    <button id="confirmPaymentBtn">Pay Now</button>
   </div>
 </div>
 
-<script>
-// Render products
-function renderProducts() {
-  const productGrid = document.getElementById("productGrid");
-  productGrid.innerHTML = '';
-  const products = JSON.parse(localStorage.getItem("products") || "[]");
-
-  if(products.length === 0){
-    productGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#888;">No products found. Upload some!</p>';
-    return;
-  }
-
-  products.forEach((product, index) => {
-    const card = document.createElement('div');
-    card.className = 'product-card';
-
-    const img = document.createElement('img');
-    img.src = product.imageBase64 || '';
-    card.appendChild(img);
-
-    const name = document.createElement('h3');
-    name.textContent = product.name || 'Unnamed Product';
-    card.appendChild(name);
-
-    const price = document.createElement('p');
-    price.textContent = `₱${product.price || '0'}`;
-    card.appendChild(price);
-
-    const btn = document.createElement('button');
-    btn.className = 'buy-btn';
-    btn.textContent = 'Buy Now';
-
-    // Open modal
-    btn.addEventListener('click', () => openCheckoutModal(product));
-    card.appendChild(btn);
-    productGrid.appendChild(card);
-  });
-}
-
-// Modal functions
-const modal = document.getElementById("checkoutModal");
-const closeModal = document.getElementById("closeModal");
-const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
-let selectedProduct = null;
-
-function openCheckoutModal(product){
-  selectedProduct = product;
-  document.getElementById("checkoutProductName").textContent = product.name || "Product";
-  document.getElementById("checkoutProductPrice").textContent = `Price: ₱${product.price || '0'}`;
-  document.getElementById("customerName").value = "";
-  modal.style.display = "flex";
-}
-
-closeModal.onclick = () => modal.style.display = "none";
-window.onclick = e => { if(e.target === modal) modal.style.display = "none"; }
-
-confirmPaymentBtn.onclick = () => {
-  const customerName = document.getElementById("customerName").value.trim();
-  if(customerName === ""){
-    alert("Please enter your name!");
-    return;
-  }
-
-  // Simulate payment success
-  alert(`Payment successful! Thank you, ${customerName}. Your download will start now.`);
-
-  if(selectedProduct && selectedProduct.productBase64){
-    const link = document.createElement('a');
-    link.href = selectedProduct.productBase64;
-    link.download = selectedProduct.name || "product.zip";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  modal.style.display = "none";
-};
-
-renderProducts();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
