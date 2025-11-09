@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="dashboard">
                 <h1>Admin Dashboard</h1>
                 <button id="logoutBtn">Logout</button>
-                
+
                 <h2>Add Product</h2>
                 <input type="text" id="productName" placeholder="Product Name">
                 <input type="text" id="productPrice" placeholder="Price">
-                <input type="file" id="productFile" accept=".zip,.pdf,.jpg,.png,.mp4">
+                <input type="file" id="productImage" accept="image/*">
+                <input type="file" id="productFile" accept=".zip,.pdf,.mp4">
                 <button id="addProductBtn">Add Product</button>
-                
+
                 <h2>Product List</h2>
                 <ul id="productList"></ul>
             </div>
@@ -41,26 +42,40 @@ document.addEventListener("DOMContentLoaded", () => {
     function addProduct() {
         const name = document.getElementById("productName").value;
         const price = document.getElementById("productPrice").value;
-        const fileInput = document.getElementById("productFile");
-        const file = fileInput.files[0];
+        const imageFile = document.getElementById("productImage").files[0];
+        const productFile = document.getElementById("productFile").files[0];
 
-        if (!name || !price || !file) return alert("Fill all fields and select a file!");
+        if (!name || !price || !imageFile || !productFile) return alert("Fill all fields and select files!");
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const fileData = e.target.result; // Base64 string
+        const readerImage = new FileReader();
+        readerImage.onload = function(e) {
+            const imageData = e.target.result;
 
-            let products = JSON.parse(localStorage.getItem("products") || "[]");
-            products.push({ name, price, fileData, fileName: file.name });
-            localStorage.setItem("products", JSON.stringify(products));
+            const readerFile = new FileReader();
+            readerFile.onload = function(ev) {
+                const fileData = ev.target.result;
 
-            document.getElementById("productName").value = "";
-            document.getElementById("productPrice").value = "";
-            fileInput.value = "";
+                let products = JSON.parse(localStorage.getItem("products") || "[]");
+                products.push({
+                    name,
+                    price,
+                    imageData,
+                    fileData,
+                    fileName: productFile.name
+                });
+                localStorage.setItem("products", JSON.stringify(products));
 
-            displayProducts();
+                // Clear inputs
+                document.getElementById("productName").value = "";
+                document.getElementById("productPrice").value = "";
+                document.getElementById("productImage").value = "";
+                document.getElementById("productFile").value = "";
+
+                displayProducts();
+            };
+            readerFile.readAsDataURL(productFile);
         };
-        reader.readAsDataURL(file);
+        readerImage.readAsDataURL(imageFile);
     }
 
     function displayProducts() {
@@ -71,8 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
         products.forEach((p, index) => {
             const li = document.createElement("li");
             li.innerHTML = `
-                ${p.name} - $${p.price} 
-                <a href="${p.fileData}" download="${p.fileName}">Download</a>
+                <strong>${p.name}</strong> - $${p.price} <br>
+                <img src="${p.imageData}" width="100"><br>
                 <button onclick="editProduct(${index})">Edit</button>
                 <button onclick="deleteProduct(${index})">Delete</button>
             `;
@@ -89,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const newPrice = prompt("Price:", p.price);
         if (!newName || !newPrice) return;
 
-        // Optional: change file? (simpler: keep old file)
+        // Keep old image and file
         products[index] = { ...p, name: newName, price: newPrice };
         localStorage.setItem("products", JSON.stringify(products));
         displayProducts();
