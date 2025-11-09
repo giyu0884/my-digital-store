@@ -5,98 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Digital Store</title>
 <style>
-/* Body & Background */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #ffe6dc; /* warm peach */
-}
+body { font-family: Arial, sans-serif; margin:0; padding:20px; background-color:#ffe6dc; }
+h1 { text-align:center; color:#e74c3c; margin-bottom:20px; }
+.product-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; justify-items:center; }
+.product-card { width:160px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; flex-direction:column; align-items:center; transition: transform 0.2s; }
+.product-card:hover { transform:translateY(-3px); }
+.product-card img { width:100%; height:120px; object-fit:cover; pointer-events:none; user-select:none; }
+.product-card h3 { font-size:14px; margin:8px 0 4px 0; color:#333; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%; }
+.product-card p { font-size:13px; color:#e74c3c; font-weight:bold; margin:0; text-align:center; }
+.buy-btn { width:90%; margin:8px 0 10px 0; padding:6px; background:linear-gradient(90deg,#ff6a00,#ff3d00); border:none; color:white; border-radius:6px; cursor:pointer; font-size:13px; text-align:center; transition:background 0.3s; }
+.buy-btn:hover { background:linear-gradient(90deg,#ff3d00,#ff6a00); }
+@media(max-width:600px){ .product-grid { grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); } .product-card { width:140px; } .product-card img { height:100px; } .buy-btn { font-size:12px; padding:5px; } }
 
-/* Title */
-h1 {
-  text-align: center;
-  color: #e74c3c; /* red-orange */
-  margin-bottom: 20px;
-}
-
-/* Product Grid */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 15px;
-  justify-items: center;
-}
-
-/* Product Card */
-.product-card {
-  width: 160px;
-  background: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s;
-}
-.product-card:hover {
-  transform: translateY(-3px);
-}
-
-/* Product Image */
-.product-card img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Product Info */
-.product-card h3 {
-  font-size: 14px;
-  margin: 8px 0 4px 0;
-  color: #333;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
-}
-.product-card p {
-  font-size: 13px;
-  color: #e74c3c;
-  font-weight: bold;
-  margin: 0;
-  text-align: center;
-}
-
-/* Buy Button */
-.buy-btn {
-  width: 90%;
-  margin: 8px 0 10px 0;
-  padding: 6px;
-  background: linear-gradient(90deg, #ff6a00, #ff3d00);
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: center;
-  transition: background 0.3s;
-}
-.buy-btn:hover {
-  background: linear-gradient(90deg, #ff3d00, #ff6a00);
-}
-
-/* Responsive */
-@media(max-width:600px){
-  .product-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-  .product-card { width: 140px; }
-  .product-card img { height: 100px; }
-  .buy-btn { font-size: 12px; padding: 5px; }
-}
+/* Modal */
+.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+.modal-content { background:#fff; padding:20px; border-radius:10px; width:90%; max-width:400px; text-align:center; }
+.modal-content h2 { margin-top:0; color:#e74c3c; }
+.modal-content input { width:80%; padding:8px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+.modal-content button { padding:8px 15px; margin-top:10px; background:linear-gradient(90deg,#ff6a00,#ff3d00); border:none; color:white; border-radius:5px; cursor:pointer; }
+.modal-content button:hover { background:linear-gradient(90deg,#ff3d00,#ff6a00); }
+.close-btn { position:absolute; top:10px; right:15px; font-size:18px; cursor:pointer; color:#e74c3c; }
 </style>
 </head>
 <body>
@@ -104,15 +32,27 @@ h1 {
 <h1>My Digital Store</h1>
 <div class="product-grid" id="productGrid"></div>
 
+<!-- Checkout Modal -->
+<div class="modal" id="checkoutModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2>Checkout</h2>
+    <p id="checkoutProductName"></p>
+    <p id="checkoutProductPrice"></p>
+    <input type="text" id="customerName" placeholder="Enter your name">
+    <button id="confirmPaymentBtn">Confirm Payment</button>
+  </div>
+</div>
+
 <script>
-// Function to render products
+// Render products
 function renderProducts() {
   const productGrid = document.getElementById("productGrid");
-  productGrid.innerHTML = ''; // clear existing
+  productGrid.innerHTML = '';
   const products = JSON.parse(localStorage.getItem("products") || "[]");
 
-  if(products.length === 0) {
-    productGrid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#888;">No products found. Upload some!</p>';
+  if(products.length === 0){
+    productGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#888;">No products found. Upload some!</p>';
     return;
   }
 
@@ -135,31 +75,53 @@ function renderProducts() {
     const btn = document.createElement('button');
     btn.className = 'buy-btn';
     btn.textContent = 'Buy Now';
-    
-    // Buy button click
-    btn.addEventListener('click', () => {
-      const confirmPayment = confirm(`Pay ₱${product.price} to get this product?`);
-      if(confirmPayment) {
-        // Trigger download of the actual product
-        if(product.productBase64) {
-          const link = document.createElement('a');
-          link.href = product.productBase64;
-          link.download = product.name || `product${index+1}.zip`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          alert("Product file is missing!");
-        }
-      }
-    });
 
+    // Open modal
+    btn.addEventListener('click', () => openCheckoutModal(product));
     card.appendChild(btn);
     productGrid.appendChild(card);
   });
 }
 
-// Call render on page load
+// Modal functions
+const modal = document.getElementById("checkoutModal");
+const closeModal = document.getElementById("closeModal");
+const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
+let selectedProduct = null;
+
+function openCheckoutModal(product){
+  selectedProduct = product;
+  document.getElementById("checkoutProductName").textContent = product.name || "Product";
+  document.getElementById("checkoutProductPrice").textContent = `Price: ₱${product.price || '0'}`;
+  document.getElementById("customerName").value = "";
+  modal.style.display = "flex";
+}
+
+closeModal.onclick = () => modal.style.display = "none";
+window.onclick = e => { if(e.target === modal) modal.style.display = "none"; }
+
+confirmPaymentBtn.onclick = () => {
+  const customerName = document.getElementById("customerName").value.trim();
+  if(customerName === ""){
+    alert("Please enter your name!");
+    return;
+  }
+
+  // Simulate payment success
+  alert(`Payment successful! Thank you, ${customerName}. Your download will start now.`);
+
+  if(selectedProduct && selectedProduct.productBase64){
+    const link = document.createElement('a');
+    link.href = selectedProduct.productBase64;
+    link.download = selectedProduct.name || "product.zip";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  modal.style.display = "none";
+};
+
 renderProducts();
 </script>
 
