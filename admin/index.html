@@ -35,6 +35,9 @@ const adminUser = "admin";
 const adminPass = "1234";
 const app = document.getElementById("app");
 
+// Clear all existing products
+localStorage.setItem("products", JSON.stringify([]));
+
 // Show login
 app.innerHTML = `
 <div class="login-screen">
