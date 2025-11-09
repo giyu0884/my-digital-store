@@ -1,0 +1,36 @@
+body { 
+  font-family: Arial, sans-serif; 
+  background-color: #f4f4f4; 
+  color: #333; 
+  text-align: center; 
+  margin: 0;
+}
+
+header { 
+  background-color: #715A5A; 
+  color: white; 
+  padding: 20px 0; 
+}
+
+.product { 
+  background: white; 
+  padding: 20px; 
+  margin: 40px auto; 
+  max-width: 400px; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+button {
+  background-color: #B87C4C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover { 
+  background-color: #8E5F37; 
+}
