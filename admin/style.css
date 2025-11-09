@@ -1,54 +1,19 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - My Digital Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <h1>Admin Login</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+  </div>
 
-.login-container, .dashboard {
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  text-align: center;
-  width: 320px;
-}
-
-.login-container input, .dashboard input {
-  width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.login-container button, .dashboard button {
-  width: 95%;
-  padding: 10px;
-  margin: 5px 0;
-  background-color: #B87C4C;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.login-container button:hover, .dashboard button:hover {
-  background-color: #8E5F37;
-}
-
-h1, h2, p {
-  margin: 10px 0;
-}
-
-.dashboard ul {
-  list-style: none;
-  padding: 0;
-}
-
-.dashboard li {
-  margin: 10px 0;
-}
+  <script src="script.js"></script>
+</body>
+</html>
