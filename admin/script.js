@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h2>Add Product</h2>
                 <input type="text" id="productName" placeholder="Product Name">
                 <input type="text" id="productPrice" placeholder="Price">
-                <input type="file" id="productImage" accept="image/*">
-                <input type="file" id="productFile" accept=".zip,.pdf,.mp4">
+                <input type="file" id="productImage" accept="image/*" title="Upload Image">
+                <input type="file" id="productFile" accept=".zip,.pdf,.mp4" title="Upload Product File">
                 <button id="addProductBtn">Add Product</button>
 
                 <h2>Product List</h2>
@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 products.push({
                     name,
                     price,
-                    imageData,
-                    fileData,
+                    imageData,      // first file: image
+                    fileData,       // second file: digital product
                     fileName: productFile.name
                 });
                 localStorage.setItem("products", JSON.stringify(products));
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             li.innerHTML = `
                 <strong>${p.name}</strong> - $${p.price} <br>
-                <img src="${p.imageData}" width="100"><br>
+                <img src="${p.imageData}" width="100" alt="${p.name}"><br>
                 <button onclick="editProduct(${index})">Edit</button>
                 <button onclick="deleteProduct(${index})">Delete</button>
             `;
